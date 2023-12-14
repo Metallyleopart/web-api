@@ -48,7 +48,7 @@ Route::delete('/class/{id}', [GradeController::class, 'deleteGrade'])->middlewar
 Route::get('/user', [UserController::class, 'getUser']);
 Route::post('/user', [UserController::class, 'addUser']);
 Route::get('/user/{id}', [UserController::class, 'findUser']);
-Route::put('/user/{id}', [UserController::class, 'updateUser']);
+Route::post('/user/{id}', [UserController::class, 'updateUser']);
 Route::delete('/user/{id}', [UserController::class, 'deleteUser']);
 
 // Materi

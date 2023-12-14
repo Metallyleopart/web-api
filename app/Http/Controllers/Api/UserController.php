@@ -172,18 +172,22 @@ class UserController extends Controller
             ],400);
         }
 
-        $data->name = $request->name;
-        $data->email = $request->email;
-        // hash password agar tidak diketahui
-        $data->password = Hash::make($request->password);
-        if ($request->role == '') {
-            $data->role = 'murid';
-        } else {
-            // cegah agar role tidak melebihi yang tersedia
-            if ($request->role == 'murid' ||
-                $request->role == 'guru' ||
-                $request->role == 'admin') {
-                    $data->role = $request->role;
+        // Update yang hanya diisi user dengan menggunakan filled
+        if ($request->filled('name')) {
+            $data->name = $request->name;
+        }
+
+        if ($request->filled('email')) {
+            $data->email = $request->email;
+        }
+
+        if ($request->filled('password')) {
+            $data->password = Hash::make($request->password);
+        }
+
+        if ($request->filled('role')) {
+            if (in_array($request->role, ['murid', 'guru', 'admin'])) {
+                $data->role = $request->role;
             } else {
                 return response()->json([
                     'code' => 404,
@@ -192,7 +196,7 @@ class UserController extends Controller
                 ],404);
             }
         }
-
+    
         // image
         if ($request->hasFile('image')) {
             // ambil image
