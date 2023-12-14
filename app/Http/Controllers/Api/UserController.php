@@ -8,6 +8,7 @@ use App\Models\Student;
 use App\Models\Teacher;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -37,7 +38,8 @@ class UserController extends Controller
             'name'=>'required',
             'email'=>'required|email',
             'password'=>'required',
-            'role'
+            'role',
+            'image'=>'mimes:jpg,jpeg,png'
         ];
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
@@ -56,6 +58,16 @@ class UserController extends Controller
                 'message' => 'Email sudah ada',
             ],401);
         }
+        // image
+        // ambil image
+        $fileImage = $request->file('image');
+        // ambil ekstensi Image
+        $imageExtension = $fileImage->extension();
+        // ganti nama Image
+        $imageName = date('ymdhis').".".$imageExtension;
+        // pindahkan Image ke folder public
+        $fileImage->move(public_path('image'), $imageName);
+
         $data->name = $request->name;
         $data->email = $request->email;
         // hash password agar tidak diketahui
@@ -76,6 +88,7 @@ class UserController extends Controller
                 ],404);
             }
         }
+        $data->image = $imageName;
         $post = $data->save();
         
         // tambahkan user_id ke database yang bersangkutan
@@ -131,39 +144,73 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function updateUSer(Request $request, string $id)
+    public function updateUser(Request $request, string $id)
     {
         $data = User::find($id);
+        // cek user
+        if (!$data) {
+            return response()->json([
+                'code' => 404,
+                'status' => false,
+                'message' => 'user tidak tersedia',
+            ],404);
+        }
         $rules = [
             'name',
             'email',
             'password',
-            'role'
+            'role',
+            'image'=>'nullable|mimes:jpg,jpeg,png'
         ];
-        // cek email sudah ada atau belum
-        if (User::where('email', $request->email)->first()) {
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
             return response()->json([
-                'code' => 401,
+                'code' => 400,
                 'status' => false,
-                'message' => 'Email sudah ada',
-            ],401);
+                'message' => 'gagal update akun',
+                'data' => $validator->errors(),
+            ],400);
         }
+
         $data->name = $request->name;
         $data->email = $request->email;
         // hash password agar tidak diketahui
         $data->password = Hash::make($request->password);
-        // cegah agar role tidak melebihi yang tersedia
-        if ($request->role == 'murid' ||
-            $request->role == 'guru' ||
-            $request->role == 'admin') {
-                $data->role = $request->role;
+        if ($request->role == '') {
+            $data->role = 'murid';
         } else {
-            return response()->json([
-                'code' => 404,
-                'status' => false,
-                'message' => 'Role tidak tersedia',
-            ],404);
+            // cegah agar role tidak melebihi yang tersedia
+            if ($request->role == 'murid' ||
+                $request->role == 'guru' ||
+                $request->role == 'admin') {
+                    $data->role = $request->role;
+            } else {
+                return response()->json([
+                    'code' => 404,
+                    'status' => false,
+                    'message' => 'Role tidak tersedia',
+                ],404);
+            }
         }
+
+        // image
+        if ($request->hasFile('image')) {
+            // ambil image
+            $fileImage = $request->file('image');
+            // ambil ekstensi Image
+            $imageExtension = $fileImage->extension();
+            // ganti nama Image
+            $imageName = date('ymdhis').".".$imageExtension;
+            // pindahkan Image ke folder public
+            $fileImage->move(public_path('image'), $imageName);
+
+            // cari image berdasarkan id untuk dihapus jika sudah akan digantikan oleh foto yang baru
+            $dataImage = User::where('id', $id)->first();
+            File::delete(public_path('image').'/'.$dataImage->image);
+
+            $data->image = $imageName;
+        }
+        
         $post = $data->save();
         return response()->json([
             'code' => 200,
@@ -188,6 +235,8 @@ class UserController extends Controller
         }
         
         $post = $data->delete();
+        // hapus image
+        File::delete(public_path('image').'/'.$data->image);
         return response()->json([
             'code' => 200,
             'status' => true,
