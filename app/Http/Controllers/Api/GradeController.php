@@ -94,7 +94,7 @@ class GradeController extends Controller
         $data = Grade::find($id);
         $rules = [
             'id',
-            'name' => 'required',
+            'name',
         ];
 
         $Validator = Validator::make($request->all(), $rules);
@@ -116,8 +116,15 @@ class GradeController extends Controller
             ],400); 
         }
         
-        $data->id = $request->id;
-        $data->name = $request->name;
+        // Update yang hanya diisi user dengan menggunakan filled        
+        if ($request->filled('id')) {
+            $data->id = $request->id;
+        }
+
+        if ($request->filled('name')) {
+            $data->name = $request->name;
+        }
+
         $post = $data->save();
         return response()->json([
             'code' => 200,

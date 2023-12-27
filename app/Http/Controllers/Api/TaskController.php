@@ -124,10 +124,10 @@ class TaskController extends Controller
     {
         $data = Task::find($id);
         $rules = [
-            'name'=>'required',
-            'tugas'=>'required',
+            'name',
+            'tugas',
             'student_id',
-            'teacher_id'=>'required',
+            'teacher_id',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -140,14 +140,25 @@ class TaskController extends Controller
             ],400);
         }
         
-        $data->name = $request->name;
-        $data->tugas = $request->tugas;
+        // Update yang hanya diisi user dengan menggunakan filled
+        if ($request->filled('name')) {
+            $data->name = $request->name;
+        }
+
+        if ($request->filled('tugas')) {
+            $data->tugas = $request->tugas;
+        }
+
         $findStudent = Student::where('user_id', $request->student_id)->first();
         if ($findStudent) {
-            $data->student_id = $request->student_id;
+            if ($request->filled('student_id')) {
+                $data->student_id = $request->student_id;
+            }
         } else {
             if ($request->student_id == '') {
-                $data->student_id = $request->student_id;
+                if ($request->filled('student_id')) {
+                    $data->student_id = $request->student_id;
+                }
             } else {
                 return response()->json([
                     'code' => 404,
@@ -156,12 +167,17 @@ class TaskController extends Controller
                 ],404);
             }
         }
+
         $findTeacher = Teacher::where('user_id', $request->teacher_id)->first();
         if ($findTeacher) {
-            $data->teacher_id = $request->teacher_id;
+            if ($request->filled('teacher_id')) {
+                $data->teacher_id = $request->teacher_id;
+            }
         } else {
             if ($request->teacher_id == '') {
-                $data->teacher_id = $request->teacher_id;
+                if ($request->filled('teacher_id')) {
+                    $data->teacher_id = $request->teacher_id;
+                }
             } else {
                 return response()->json([
                     'code' => 404,
@@ -170,6 +186,7 @@ class TaskController extends Controller
                 ],404);
             }
         }
+        
         $post = $data->save();
         return response()->json([
             'code' => 200,

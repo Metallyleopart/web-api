@@ -207,11 +207,10 @@ class UserController extends Controller
             $imageName = date('ymdhis').".".$imageExtension;
             // pindahkan Image ke folder public
             $fileImage->move(public_path('image'), $imageName);
-
             // cari image berdasarkan id untuk dihapus jika sudah akan digantikan oleh foto yang baru
             $dataImage = User::where('id', $id)->first();
             File::delete(public_path('image').'/'.$dataImage->image);
-
+            // tambahkan gambar ke $data
             $data->image = $imageName;
         }
         
@@ -238,9 +237,9 @@ class UserController extends Controller
             ],404);
         }
         
-        $post = $data->delete();
         // hapus image
         File::delete(public_path('image').'/'.$data->image);
+        $post = $data->delete();
         return response()->json([
             'code' => 200,
             'status' => true,

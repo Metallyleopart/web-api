@@ -121,9 +121,9 @@ class LearningController extends Controller
     {
         $data = Learning::find($id);
         $rules = [
-            'name'=>'required',
-            'materi'=>'required',
-            'teacher_id'=>'required',
+            'name',
+            'materi',
+            'teacher_id',
             'task_id',
         ];
         $validator = Validator::make($request->all(), $rules);
@@ -136,12 +136,21 @@ class LearningController extends Controller
             ],400);
         }
         
-        $data->name = $request->name;
-        $data->materi = $request->materi;
+        // Update yang hanya diisi user dengan menggunakan filled
+        if ($request->filled('name')) {
+            $data->name = $request->name;
+        }
+
+        if ($request->filled('materi')) {
+            $data->materi = $request->materi;
+        }
+        
         $findTeacher = Teacher::where('user_id',$request->teacher_id)->first();
-            // $find = Teacher::find($request->teacher_id);
-            if ($findTeacher) {
-                $data->teacher_id = $request->teacher_id;
+        // $find = Teacher::find($request->teacher_id);
+        if ($findTeacher) {
+                if ($request->filled('teacher_id')) {
+                    $data->teacher_id = $request->teacher_id;
+                }
             } else {
                 return response()->json([
                     'code' => 404,
@@ -149,12 +158,17 @@ class LearningController extends Controller
                     'message' => 'id guru tidak ditemukan',
                 ],404);
             }
-        $findTask = Task::where('id',$request->task_id)->first();
+            
+            $findTask = Task::where('id',$request->task_id)->first();
             if ($findTask) {
-                $data->task_id = $request->task_id;
+                if ($request->filled('task_id')) {
+                    $data->task_id = $request->task_id;
+                }
             } else {
                 if ($request->task_id == '') {
-                    $data->task_id = $request->task_id;
+                    if ($request->filled('task_id')) {
+                        $data->task_id = $request->task_id;
+                    }
                 } else {
                     return response()->json([
                         'code' => 404,
@@ -163,6 +177,7 @@ class LearningController extends Controller
                     ],404);
                 }
             }
+
         $post = $data->save();
         return response()->json([
             'code' => 200,
