@@ -12,6 +12,8 @@ class Task extends Model
     protected $fillable = [
         'name',
         'tugas',
+        'nilai',
+        'status_nilai',
         'student_id',
         'teacher_id',
     ];

@@ -5,14 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class remedial extends Model
+class Remidial extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'id',
-        'nilai',
-        'nilai_gabungan',
+        'name',
         'task_id',
+        'nilai_awal',
+        'nilai_remidial',
+        'nilai_akhir',
     ];
 }

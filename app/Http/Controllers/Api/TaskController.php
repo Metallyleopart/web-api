@@ -34,7 +34,9 @@ class TaskController extends Controller
         $rules = [
             'name'=>'required',
             'tugas'=>'required',
-            'student_id',
+            'nilai',
+            'status_nilai',
+            'student_id'=>'required',
             'teacher_id'=>'required',
         ];
 
@@ -58,6 +60,12 @@ class TaskController extends Controller
         
         $data->name = $request->name;
         $data->tugas = $request->tugas;
+        $data->nilai = $request->nilai;
+        if ($request->nilai > 76) {
+            $data->status_nilai = 'lulus';
+        }else {
+            $data->status_nilai = 'remidial';
+        }
         $findStudent = Student::where('user_id', $request->student_id)->first();
         if ($findStudent) {
             $data->student_id = $request->student_id;
@@ -123,6 +131,15 @@ class TaskController extends Controller
     public function updateTask(Request $request, string $id)
     {
         $data = Task::find($id);
+        // cek user
+        if (!$data) {
+            return response()->json([
+                'code' => 404,
+                'status' => false,
+                'message' => 'tugas tidak tersedia',
+            ],404);
+        }
+
         $rules = [
             'name',
             'tugas',

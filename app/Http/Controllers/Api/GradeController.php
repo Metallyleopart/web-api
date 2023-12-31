@@ -92,6 +92,15 @@ class GradeController extends Controller
     public function updateGrade(Request $request, string $id)
     {
         $data = Grade::find($id);
+        // cek user
+        if (!$data) {
+            return response()->json([
+                'code' => 404,
+                'status' => false,
+                'message' => 'kelas tidak tersedia',
+            ],404);
+        }
+
         $rules = [
             'id',
             'name',

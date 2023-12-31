@@ -59,15 +59,18 @@ class UserController extends Controller
             ],401);
         }
         // image
-        // ambil image
-        $fileImage = $request->file('image');
-        // ambil ekstensi Image
-        $imageExtension = $fileImage->extension();
-        // ganti nama Image
-        $imageName = date('ymdhis').".".$imageExtension;
-        // pindahkan Image ke folder public
-        $fileImage->move(public_path('image'), $imageName);
-
+        if ($request->image != '') {
+            // ambil image
+            $fileImage = $request->file('image');
+            // ambil ekstensi Image
+            $imageExtension = $fileImage->extension();
+            // ganti nama Image
+            $imageName = date('ymdhis').".".$imageExtension;
+            // pindahkan Image ke folder public
+            $fileImage->move(public_path('image'), $imageName);    
+        }else {
+            $imageName = null;
+        }
         $data->name = $request->name;
         $data->email = $request->email;
         // hash password agar tidak diketahui

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\GradeController;
 use App\Http\Controllers\Api\LearningController;
+use App\Http\Controllers\Api\RemidialController;
 use App\Http\Controllers\Api\TaskController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
@@ -65,3 +66,10 @@ Route::post('/tugas', [TaskController::class, 'addTask']);
 Route::get('/tugas/{id}', [TaskController::class, 'findTask']);
 Route::put('/tugas/{id}', [TaskController::class, 'updateTask']);
 Route::delete('/tugas/{id}', [TaskController::class, 'deleteTask']);
+
+// Remidial
+Route::get('/remidial', [RemidialController::class, 'getRemidial']);
+Route::post('/remidial', [RemidialController::class, 'addRemidial']);
+Route::get('/remidial/{id}', [RemidialController::class, 'findRemidial']);
+Route::put('/remidial/{id}', [RemidialController::class, 'updateRemidial']);
+Route::delete('/remidial/{id}', [RemidialController::class, 'deleteRemidial']);

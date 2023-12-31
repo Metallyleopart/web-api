@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('remedials', function (Blueprint $table) {
+        Schema::create('remidials', function (Blueprint $table) {
             $table->id();
-            $table->integer('nilai');
-            $table->integer('nilai_gabungan');
-            $table->foreignId('tasks_id')->references('id')->on('tasks')->constrained()->cascadeOnDelete();
+            $table->string('name');
+            $table->foreignId('task_id')->references('id')->on('tasks')->constrained()->cascadeOnDelete();
+            $table->integer('nilai_awal')->nullable();
+            $table->integer('nilai_remidial')->nullable();
+            $table->integer('nilai_akhir')->nullable();
             $table->timestamps();
         });
     }
@@ -25,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('remedials');
+        Schema::dropIfExists('remidials');
     }
 };

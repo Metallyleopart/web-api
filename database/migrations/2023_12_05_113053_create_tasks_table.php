@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('tugas');
             $table->integer('nilai')->nullable();
             $table->text('status_nilai')->nullable();
-            $table->foreignId('student_id')->nullable()->references('user_id')->on('students')->constrained()->cascadeOnDelete();
+            $table->foreignId('student_id')->references('user_id')->on('students')->constrained()->cascadeOnDelete();
             $table->foreignId('teacher_id')->references('user_id')->on('teachers')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });

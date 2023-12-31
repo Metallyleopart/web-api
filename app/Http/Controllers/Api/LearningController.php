@@ -120,6 +120,15 @@ class LearningController extends Controller
     public function updateLearning(Request $request, string $id)
     {
         $data = Learning::find($id);
+        // cek user
+        if (!$data) {
+            return response()->json([
+                'code' => 404,
+                'status' => false,
+                'message' => 'materi tidak tersedia',
+            ],404);
+        }
+
         $rules = [
             'name',
             'materi',
