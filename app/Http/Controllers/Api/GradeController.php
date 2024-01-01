@@ -149,19 +149,19 @@ class GradeController extends Controller
     public function deleteGrade(string $id)
     {
         $data = Grade::find($id);
-        if (empty($data)) {
+        if ($data) {
+            $post = $data->delete();
+            return response()->json([
+                'code' => 200,
+                'status' => true,
+                'message' => 'data berhasil dihapus',
+            ],200);
+        } else {
             return response()->json([
                 'code' => 404,
                 'status' => false,
                 'message' => 'id tidak ditemukan',
             ],404);
         }
-
-        $post = $data->delete();
-        return response()->json([
-            'code' => 200,
-            'status' => true,
-            'message' => 'data berhasil dihapus',
-        ],200);
     }
 }

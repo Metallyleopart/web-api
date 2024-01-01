@@ -14,6 +14,5 @@ class Remidial extends Model
         'task_id',
         'nilai_awal',
         'nilai_remidial',
-        'nilai_akhir',
     ];
 }

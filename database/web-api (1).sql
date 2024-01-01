@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Dec 27, 2023 at 12:49 PM
+-- Generation Time: Jan 01, 2024 at 10:35 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -105,7 +105,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (7, '2023_12_05_112941_create_teachers_table', 1),
 (8, '2023_12_05_113053_create_tasks_table', 1),
 (9, '2023_12_05_113054_create_learnings_table', 1),
-(10, '2023_12_07_112148_create_admins_table', 1);
+(10, '2023_12_07_112148_create_admins_table', 1),
+(11, '2023_12_30_131750_create_remidials_table', 1);
 
 -- --------------------------------------------------------
 
@@ -141,6 +142,35 @@ CREATE TABLE `personal_access_tokens` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `remidials`
+--
+
+CREATE TABLE `remidials` (
+  `id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `task_id` bigint UNSIGNED NOT NULL,
+  `nilai_awal` int DEFAULT NULL,
+  `nilai_remidial` int DEFAULT NULL,
+  `nilai_akhir` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `remidials`
+--
+
+INSERT INTO `remidials` (`id`, `name`, `task_id`, `nilai_awal`, `nilai_remidial`, `nilai_akhir`, `created_at`, `updated_at`) VALUES
+(1, 'p bang', 1, 56, NULL, 56, '2023-12-31 00:24:23', '2023-12-31 01:40:10'),
+(2, 'k', 1, 56, 50, 53, '2023-12-31 00:24:43', '2023-12-31 01:52:49'),
+(4, 'o', 1, 56, 98, 77, '2023-12-31 00:29:43', '2023-12-31 00:29:43'),
+(5, 'a', 1, 56, 98, 77, '2023-12-31 01:45:15', '2023-12-31 01:45:15'),
+(6, 'l', 1, 56, 98, 77, '2024-01-01 03:22:24', '2024-01-01 03:22:24'),
+(7, 'i', 1, 56, 98, 77, '2024-01-01 03:26:41', '2024-01-01 03:26:41');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `students`
 --
 
@@ -152,6 +182,13 @@ CREATE TABLE `students` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `students`
+--
+
+INSERT INTO `students` (`id`, `user_id`, `grade_id`, `created_at`, `updated_at`) VALUES
+(1, 1, NULL, '2023-12-31 00:22:46', '2023-12-31 00:22:46');
+
 -- --------------------------------------------------------
 
 --
@@ -162,11 +199,20 @@ CREATE TABLE `tasks` (
   `id` bigint UNSIGNED NOT NULL,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `tugas` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `student_id` bigint UNSIGNED DEFAULT NULL,
+  `nilai` int DEFAULT NULL,
+  `status_nilai` text COLLATE utf8mb4_unicode_ci,
+  `student_id` bigint UNSIGNED NOT NULL,
   `teacher_id` bigint UNSIGNED NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tasks`
+--
+
+INSERT INTO `tasks` (`id`, `name`, `tugas`, `nilai`, `status_nilai`, `student_id`, `teacher_id`, `created_at`, `updated_at`) VALUES
+(1, 'hehe', 'tes', 56, 'remidial', 1, 2, '2023-12-31 00:23:52', '2023-12-31 00:23:52');
 
 -- --------------------------------------------------------
 
@@ -181,6 +227,13 @@ CREATE TABLE `teachers` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `teachers`
+--
+
+INSERT INTO `teachers` (`id`, `user_id`, `grade_id`, `created_at`, `updated_at`) VALUES
+(1, 2, NULL, '2023-12-31 00:23:11', '2023-12-31 00:23:11');
 
 -- --------------------------------------------------------
 
@@ -199,6 +252,14 @@ CREATE TABLE `users` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `image`, `remember_token`, `created_at`, `updated_at`) VALUES
+(1, 'murid', 'murid@gmail.com', '$2y$12$VwARAg/XJ/OzloxLBJgRhuMYaNfYw4DXWPKb45RKFHy9f3UxVMD7a', 'murid', NULL, NULL, '2023-12-31 00:22:46', '2023-12-31 00:22:46'),
+(2, 'guru', 'guru@gmail.com', '$2y$12$dso9WjmQRGX4auzGipIVKem2mrsI0tforMomM6rPEu0IbpTQKXrGa', 'guru', NULL, NULL, '2023-12-31 00:23:11', '2023-12-31 00:23:11');
 
 --
 -- Indexes for dumped tables
@@ -251,6 +312,13 @@ ALTER TABLE `personal_access_tokens`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `personal_access_tokens_token_unique` (`token`),
   ADD KEY `personal_access_tokens_tokenable_type_tokenable_id_index` (`tokenable_type`,`tokenable_id`);
+
+--
+-- Indexes for table `remidials`
+--
+ALTER TABLE `remidials`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `remidials_task_id_foreign` (`task_id`);
 
 --
 -- Indexes for table `students`
@@ -315,7 +383,7 @@ ALTER TABLE `learnings`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `personal_access_tokens`
@@ -324,28 +392,34 @@ ALTER TABLE `personal_access_tokens`
   MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `remidials`
+--
+ALTER TABLE `remidials`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
 -- AUTO_INCREMENT for table `students`
 --
 ALTER TABLE `students`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `tasks`
 --
 ALTER TABLE `tasks`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `teachers`
 --
 ALTER TABLE `teachers`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
@@ -363,6 +437,12 @@ ALTER TABLE `admins`
 ALTER TABLE `learnings`
   ADD CONSTRAINT `learnings_task_id_foreign` FOREIGN KEY (`task_id`) REFERENCES `tasks` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `learnings_teacher_id_foreign` FOREIGN KEY (`teacher_id`) REFERENCES `teachers` (`user_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `remidials`
+--
+ALTER TABLE `remidials`
+  ADD CONSTRAINT `remidials_task_id_foreign` FOREIGN KEY (`task_id`) REFERENCES `tasks` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `students`

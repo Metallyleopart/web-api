@@ -232,7 +232,16 @@ class UserController extends Controller
     public function deleteUSer(string $id)
     {
         $data = User::find($id);
-        if (empty($data)) {
+        if ($data) {
+            // hapus image
+            File::delete(public_path('image').'/'.$data->image);
+            $post = $data->delete();
+            return response()->json([
+                'code' => 200,
+                'status' => true,
+                'message' => 'hapus user berhasil',
+            ],200);
+        } else {
             return response()->json([
                 'code' => 404,
                 'status' => false,
@@ -240,13 +249,5 @@ class UserController extends Controller
             ],404);
         }
         
-        // hapus image
-        File::delete(public_path('image').'/'.$data->image);
-        $post = $data->delete();
-        return response()->json([
-            'code' => 200,
-            'status' => true,
-            'message' => 'hapus user berhasil',
-        ],200);
     }
 }

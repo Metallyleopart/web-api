@@ -219,7 +219,14 @@ class TaskController extends Controller
     public function deleteTask(string $id)
     {
         $data = Task::find($id);
-        if (empty($data)) {
+        if ($data) {
+            $post = $data->delete();
+            return response()->json([
+                'code' => 200,
+                'status' => true,
+                'message' => 'berhasil hapus data',
+            ],200);
+        } else {
             return response()->json([
                 'code' => 404,
                 'status' => false,
@@ -227,11 +234,5 @@ class TaskController extends Controller
             ],404);
         }
         
-        $post = $data->delete();
-        return response()->json([
-            'code' => 200,
-            'status' => true,
-            'message' => 'berhasil hapus data',
-        ],200);
     }
 }

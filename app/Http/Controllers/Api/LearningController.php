@@ -202,19 +202,19 @@ class LearningController extends Controller
     public function deleteLearning(string $id)
     {
         $data = Learning::find($id);
-        if (empty($data)) {
+        if ($data) {
+            $post = $data->delete();
+            return response()->json([
+                'code' => 200,
+                'status' => true,
+                'message' => 'hapus materi berhasil',
+            ],200);
+        } else {
             return response()->json([
                 'code' => 404,
                 'status' => false,
                 'message' => 'id tidak ditemukan',
             ],404);
         }
-        $post = $data->delete();
-        return response()->json([
-            'code' => 200,
-            'status' => true,
-            'message' => 'hapus materi berhasil',
-        ],200);
-        
     }
 }
